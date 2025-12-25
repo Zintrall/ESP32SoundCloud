@@ -1,0 +1,24 @@
+{
+  "name": "ESP32SoundCloud",
+  "version": "0.1.0",
+  "description": " A  ESP32 library, that lets you comunicate with SoundCloud API",
+  "keywords": ["soundcloud", "music", "esp32"],
+  "authors": [
+    {
+      "name": "Zintrall",
+      "email": "zintrall@post.cz",
+      "maintainer": true
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Zintrall/ESP32SoundCloud",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zintrall/ESP32SoundCloud.git"
+  },
+  "frameworks": ["arduino"],
+  "platforms": ["espressif32"],
+  "dependencies": {
+    "ArduinoJson": "^7.4.2"
+  }
+}
