@@ -129,20 +129,35 @@ JsonDocument ESP32SoundCloud::getFromURL() {
 
 JsonDocument ESP32SoundCloud::searchPlaylist(char* query, unsigned int limit, bool show_tracks){
     const char* tracksStr = show_tracks ? "true" : "false";
+    if (limit == 0){
+        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/playlists?q=%s&show_tracks=%s&linked_partitioning=true",
+                 urlEncode(String(query)), tracksStr);
+    }
+    else{
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/playlists?q=%s&show_tracks=%s&limit=%u&linked_partitioning=true",
-             urlEncode(String(query)), tracksStr, limit);
+             urlEncode(String(query)), tracksStr, limit);}
     return getFromURL();
 }
 
 JsonDocument ESP32SoundCloud::searchTrack(char* query, unsigned int limit){
+    if (limit == 0){
+        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/tracks?q=%s&linked_partitioning=true",
+                 urlEncode(String(query)));
+    }
+    else{
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/tracks?q=%s&limit=%u&linked_partitioning=true",
-             urlEncode(String(query)), limit);
+             urlEncode(String(query)), limit);}
     return getFromURL();
 }
 
 JsonDocument ESP32SoundCloud::searchUser(char* query, unsigned int limit){
+    if (limit == 0){
+        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users?q=%s&linked_partitioning=true",
+                 urlEncode(String(query)));
+    }
+    else{
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users?q=%s&limit=%u&linked_partitioning=true",
-             urlEncode(String(query)), limit);
+             urlEncode(String(query)), limit);}
     return getFromURL();
 }
 
@@ -166,14 +181,24 @@ JsonDocument ESP32SoundCloud::getPlaylist(char* playlist_urn, bool show_tracks){
 }
 
 JsonDocument ESP32SoundCloud::userTracks(char* user_urn, unsigned int limit){
+    if (limit == 0){
+        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/tracks",
+                 urlEncode(String(user_urn)));
+    }
+    else{
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/tracks?limit=%u",
-             urlEncode(String(user_urn)), limit);
+             urlEncode(String(user_urn)), limit);}
     return getFromURL();
 }
 
 JsonDocument ESP32SoundCloud::userLikedTracks(char* user_urn, unsigned int limit){
+    if (limit == 0){
+        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/likes/tracks",
+                 urlEncode(String(user_urn)));
+    }
+    else{
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/likes/tracks?limit=%u",
-             urlEncode(String(user_urn)), limit);
+             urlEncode(String(user_urn)), limit);}
     return getFromURL();
 }
 
