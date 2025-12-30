@@ -19,9 +19,9 @@ class ESP32SoundCloud{
         JsonDocument userTracks(char* user_urn, unsigned int limit);
         JsonDocument userLikedTracks(char* user_urn, unsigned int limit);
         JsonDocument customGet(char* url);
-        String urlEncode(String str);
-
+        char* urlEncode(const String& str);
     private:
+        char encode[256];
         JsonDocument getFromURL();
         bool checkToken();
         bool renewToken();

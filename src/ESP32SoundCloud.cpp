@@ -95,15 +95,34 @@ void ESP32SoundCloud::beginWithSetToken(char* token, char* refresh, int expires)
     expirationTime = millis() + ((expires-10) * 1000);
 }
 
-String ESP32SoundCloud::urlEncode(String str) {
-    str.replace(" ", "%20");
-    str.replace(":", "%3A");
-    return str;
+char* ESP32SoundCloud::urlEncode(const String& str) {
+    const char* unreserved = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.~";
+    size_t outIndex = 0;
+    for (size_t i = 0; i < str.length() && outIndex < sizeof(encode) - 1; i++) {
+        char c = str.charAt(i);
+        if (strchr(unreserved, c)) {
+            if (outIndex < sizeof(encode) - 1) {
+                encode[outIndex++] = c;
+            }
+        } else {
+            if (outIndex < sizeof(encode) - 4) {
+                snprintf(encode + outIndex, 4, "%%%02X", (unsigned char)c);
+                outIndex += 3;
+            } else {
+                break;
+            }
+        }
+    }
+    encode[outIndex] = '\0';
+    return encode;
 }
 
 
 JsonDocument ESP32SoundCloud::getFromURL() {
     checkToken();
+
+    Serial.print("getURLBuffer: ");
+    Serial.println(getURLBuffer);
 
     http.begin(client, getURLBuffer);
 
@@ -128,6 +147,7 @@ JsonDocument ESP32SoundCloud::getFromURL() {
 }
 
 JsonDocument ESP32SoundCloud::searchPlaylist(char* query, unsigned int limit, bool show_tracks){
+    strcpy(getURLBuffer, "");
     const char* tracksStr = show_tracks ? "true" : "false";
     if (limit == 0){
         snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/playlists?q=%s&show_tracks=%s&linked_partitioning=true",
@@ -140,6 +160,7 @@ JsonDocument ESP32SoundCloud::searchPlaylist(char* query, unsigned int limit, bo
 }
 
 JsonDocument ESP32SoundCloud::searchTrack(char* query, unsigned int limit){
+    strcpy(getURLBuffer, "");
     if (limit == 0){
         snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/tracks?q=%s&linked_partitioning=true",
                  urlEncode(String(query)));
@@ -151,6 +172,7 @@ JsonDocument ESP32SoundCloud::searchTrack(char* query, unsigned int limit){
 }
 
 JsonDocument ESP32SoundCloud::searchUser(char* query, unsigned int limit){
+    strcpy(getURLBuffer, "");
     if (limit == 0){
         snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users?q=%s&linked_partitioning=true",
                  urlEncode(String(query)));
@@ -162,18 +184,21 @@ JsonDocument ESP32SoundCloud::searchUser(char* query, unsigned int limit){
 }
 
 JsonDocument ESP32SoundCloud::getTrack(char* track_urn){
+    strcpy(getURLBuffer, "");
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/tracks/%s",
              urlEncode(String(track_urn)));
     return getFromURL();
 }
 
 JsonDocument ESP32SoundCloud::streamTrack(char* track_urn){
+    strcpy(getURLBuffer, "");
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/tracks/%s/streams",
              urlEncode(String(track_urn)));
     return getFromURL();
 }
 
 JsonDocument ESP32SoundCloud::getPlaylist(char* playlist_urn, bool show_tracks){
+    strcpy(getURLBuffer, "");
     const char* tracksStr = show_tracks ? "true" : "false";
     snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/playlists/%s?show_tracks=%s",
              urlEncode(String(playlist_urn)), tracksStr);
@@ -181,6 +206,7 @@ JsonDocument ESP32SoundCloud::getPlaylist(char* playlist_urn, bool show_tracks){
 }
 
 JsonDocument ESP32SoundCloud::userTracks(char* user_urn, unsigned int limit){
+    strcpy(getURLBuffer, "");
     if (limit == 0){
         snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/tracks",
                  urlEncode(String(user_urn)));
@@ -192,6 +218,7 @@ JsonDocument ESP32SoundCloud::userTracks(char* user_urn, unsigned int limit){
 }
 
 JsonDocument ESP32SoundCloud::userLikedTracks(char* user_urn, unsigned int limit){
+    strcpy(getURLBuffer, "");
     if (limit == 0){
         snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/likes/tracks",
                  urlEncode(String(user_urn)));
@@ -203,6 +230,7 @@ JsonDocument ESP32SoundCloud::userLikedTracks(char* user_urn, unsigned int limit
 }
 
 JsonDocument ESP32SoundCloud::customGet(char* url){
+    strcpy(getURLBuffer, "");
     snprintf(getURLBuffer, sizeof(getURLBuffer), url);
     return getFromURL();
 }
