@@ -203,6 +203,6 @@ JsonDocument ESP32SoundCloud::userLikedTracks(char* user_urn, unsigned int limit
 }
 
 JsonDocument ESP32SoundCloud::customGet(char* url){
-    snprintf(getURLBuffer, sizeof(getURLBuffer), url)
+    snprintf(getURLBuffer, sizeof(getURLBuffer), url);
     return getFromURL();
 }
