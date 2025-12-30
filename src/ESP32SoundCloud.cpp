@@ -121,9 +121,6 @@ char* ESP32SoundCloud::urlEncode(const String& str) {
 JsonDocument ESP32SoundCloud::getFromURL() {
     checkToken();
 
-    Serial.print("getURLBuffer: ");
-    Serial.println(getURLBuffer);
-
     http.begin(client, getURLBuffer);
 
     http.addHeader("Authorization", String("Bearer ")+String(accessToken));
