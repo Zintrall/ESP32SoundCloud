@@ -148,10 +148,15 @@ ESP32SoundCloud sc("your_client_id", "your_client_secret");
   - Get tracks liked/favorited by a user.
 
 - `JsonDocument customGet(char* url)`
-  - Perform a GET request to a custom SoundCloud URL, with the access_token Authorization (useful for endpoints not directly wrapped).
+  - Perform a GET request to a custom SoundCloud URL, with the access_token Authorization (useful for endpoints not directly wrapped or linked partitioning).
 
 - `String urlEncode(String str)`
   - URL-encode a string for safe inclusion in queries.
+
+---
+### Tips
+- You can set the `limit` argument to `0` for no limit, but be careful as very large responses may cause the result to appear empty due to memory constraints.
+- Linked partitioning is enabled by default in most requests, so you'll receive a `"next_href"` field alongside the `"collection"`. To fetch additional results, simply call `customGet(response["next_href"])`.
 
 ---
 

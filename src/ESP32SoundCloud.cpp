@@ -197,7 +197,7 @@ JsonDocument ESP32SoundCloud::streamTrack(char* track_urn){
 JsonDocument ESP32SoundCloud::getPlaylist(char* playlist_urn, bool show_tracks){
     strcpy(getURLBuffer, "");
     const char* tracksStr = show_tracks ? "true" : "false";
-    snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/playlists/%s?show_tracks=%s",
+    snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/playlists/%s?show_tracks=%s&linked_partitioning=true",
              urlEncode(String(playlist_urn)), tracksStr);
     return getFromURL();
 }
@@ -205,11 +205,11 @@ JsonDocument ESP32SoundCloud::getPlaylist(char* playlist_urn, bool show_tracks){
 JsonDocument ESP32SoundCloud::userTracks(char* user_urn, unsigned int limit){
     strcpy(getURLBuffer, "");
     if (limit == 0){
-        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/tracks",
+        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/tracks?linked_partitioning=true",
                  urlEncode(String(user_urn)));
     }
     else{
-    snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/tracks?limit=%u",
+    snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/tracks?limit=%u&linked_partitioning=true",
              urlEncode(String(user_urn)), limit);}
     return getFromURL();
 }
@@ -217,11 +217,11 @@ JsonDocument ESP32SoundCloud::userTracks(char* user_urn, unsigned int limit){
 JsonDocument ESP32SoundCloud::userLikedTracks(char* user_urn, unsigned int limit){
     strcpy(getURLBuffer, "");
     if (limit == 0){
-        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/likes/tracks",
+        snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/likes/tracks?linked_partitioning=true",
                  urlEncode(String(user_urn)));
     }
     else{
-    snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/likes/tracks?limit=%u",
+    snprintf(getURLBuffer, sizeof(getURLBuffer), "https://api.soundcloud.com/users/%s/likes/tracks?limit=%u&linked_partitioning=true",
              urlEncode(String(user_urn)), limit);}
     return getFromURL();
 }
